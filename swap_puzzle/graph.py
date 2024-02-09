@@ -97,6 +97,16 @@ class Graph:
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
+        path=[src]
+        def auxi(path,src,self,dst):
+            if src==dst :
+                path+=[dst]
+            elif self.graphe[src] ==[]:
+                path+=[]
+            for i in self.graph[src]:
+                return(auxi(i))
+        return(path)
+                
         # TODO: implement this function (and remove the line "raise NotImplementedError").
         raise NotImplementedError
 
