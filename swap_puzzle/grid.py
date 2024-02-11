@@ -1,7 +1,7 @@
 """
 This is the grid module. It contains the Grid class and its associated methods.
 """
-
+import matplotlib.pyplot as plt 
 import random
 
 class Grid():
@@ -53,21 +53,10 @@ class Grid():
         """
         return f"<grid.Grid: m={self.m}, n={self.n}>"
 
-    def is_sorted(self):
-        if self.state == [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]:
-            print(True)
-            print(False)
-        """
-        Checks is the current state of the grid is sorte and returns the answer as a boolean.
-        """
-
+   
+    # Question 2
+   
     def swap(self, cell1, cell2):
-        
-        if not cell1[0] == cell2[0] + 1 or cell1[0] == cell2[0]-1 or cell1[1] == cell2[1] + 1 or cell1[1] == cell2[1] - 1 : 
-            print("Can't swap")
-        else : 
-            (cell1, cell2) = (cell2, cell1)
-
         """
         Implements the swap operation between two cells. Raises an exception if the swap is not allowed.
 
@@ -76,10 +65,19 @@ class Grid():
         cell1, cell2: tuple[int]
             The two cells to swap. They must be in the format (i, j) where i is the line and j the column number of the cell. 
         """
+        # On commence par vérifier que le swap est possible
+        assert((cell1[0]==cell2[0] and abs(cell1[1]-cell2[1])==1) or (cell1[1]==cell2[1] and abs(cell1[0]-cell2[0])==1))
+        # puis on l'effectue
+        (a,b)=cell1
+        (c,d)=cell2
+        x=self.state[a][b]
+        y=self.state[c][d]
+        self.state[a][b]=y
+        self.state[c][d]=x
+
 
     def swap_seq(self, cell_pair_list):
         
-        [swap(self,cell_pair_list(i,0),cell_pair_list(i,1)) for i in range(len(cell_pair_list))]
         """
         Executes a sequence of swaps. 
 
@@ -89,7 +87,49 @@ class Grid():
             List of swaps, each swap being a tuple of two cells (each cell being a tuple of integers). 
             So the format should be [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
         """
-     
+        for i in range(len(cell_pair_list)):
+            self.swap(cell_pair_list[i][0], cell_pair_list[i][1])
+    '''On utilise la fonction swap préalablement définie qu'on éxecute sur les couples de cellules fournis dans 
+    la liste de cellules à échanger(celle_pair_list)'''
+        
+    def is_sorted(self): #On vérifie dans cette fonction que les cellules sont rangées par ordre croissant
+        n = self.n
+        m = self.m
+        l = self.state
+        for i in range(m):
+            for j in range(n-1):
+                if l[i][j] > l[i][j+1]:
+                    return False
+        return True
+        """
+        Checks is the current state of the grid is sorte and returns the answer as a boolean.
+        """ 
+
+    
+    #Représentation graphique
+    def trace(self):
+        _, ax = plt.subplots()
+
+        ax.matshow(self.state, cmap=plt.cm.Blues)
+        for i in range(self.n):
+            for j in range(self.m):
+                c = self.state[j][i]
+                ax.text(i, j, str(c), va='center', ha='center')
+        plt.show()
+
+
+    #question 6
+    def to_hashable(self): #retourne une représentation hashable de la grille
+        return (tuple(tuple(line) for line in self.state))
+    
+    @staticmethod
+    def from_hashable(hashable_state:tuple): #retourne une grille depuis une version hashable de grille 
+        content= [list(row) for row in hashable_state]
+        m=len(content)
+        n=len(content[0])
+        return(Grid(m,n,content))
+    
+
 
     @classmethod
     def grid_from_file(cls, file_name): 

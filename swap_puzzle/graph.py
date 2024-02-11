@@ -80,6 +80,25 @@ class Graph:
         self.graph[node2].append(node1)
         self.nb_edges += 1
         self.edges.append((node1, node2))
+    
+    import pyplot as plt
+    #Représentation graphique
+    def trace(self):
+
+        _, ax = plt.subplots()
+
+        ax.matshow(self.state, cmap=plt.cm.Blues)
+
+        for i in range(self.n):
+            for j in range(self.m):
+                c = self.state[j][i]
+                ax.text(i, j, str(c), va='center', ha='center')
+        plt.show()
+
+                
+      
+ #Question 5 : Algorithme de parcours en largeur
+    
 
     def bfs(self, src, dst): 
         """
@@ -97,18 +116,26 @@ class Graph:
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
-        path=[src]
-        def auxi(path,src,self,dst):
-            if src==dst :
-                path+=[dst]
-            elif self.graphe[src] ==[]:
-                path+=[]
-            for i in self.graph[src]:
-                return(auxi(i))
-        return(path)
-                
-        # TODO: implement this function (and remove the line "raise NotImplementedError").
-        raise NotImplementedError
+        """ On implémante un parcours en largeur classique avec d la liste des distances par rappport à la source.
+        On s'en sert notamment pour savoir si un sommet est atteignable. La file sert de liste d'attente des 
+        sommets avant qu'ils soient traités. La liste predecessor indique pour chaque sommet un prédecesseur 
+        tel que le chemin en passant par ce prédecesseur soit le plus court possible.
+        """
+
+        dico = self.graph
+        pile = [(src, [src])]
+
+        while pile: 
+            s, path = pile.pop(0)
+            if s == dst:
+                return path 
+            
+            for i in dico[s]:
+                if i not in path:
+                    pile.append((i, path + [i]))
+
+        return None
+        
 
     @classmethod
     def graph_from_file(cls, file_name):
@@ -142,3 +169,5 @@ class Graph:
                     raise Exception("Format incorrect")
         return graph
 
+        graph1 = Graph.graph_from_file('input.graph1.in')
+        print(graph1.bfs(1,7))
