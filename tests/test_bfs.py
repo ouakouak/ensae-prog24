@@ -12,7 +12,7 @@ class Test_BFS(unittest.TestCase):
         for i in range(1,20,1) :
             for j in range(1,20,1) :
                 f = g.bfs(i,j)
-                for a in "/workspaces/ensae-prog24/input/graph1.path.out" :
+                for a in "/workspaces/ensae-prog24/input/graph1.path.out" : #doute : parcourt-on bien toutes les lignes ? 
                     if a[0:4] == str(i)+" "+str(j) :
                         b = a[8: -1]
                         self.assertEqual(f, b)
