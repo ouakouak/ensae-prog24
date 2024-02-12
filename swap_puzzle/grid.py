@@ -3,7 +3,7 @@ This is the grid module. It contains the Grid class and its associated methods.
 """
 import matplotlib.pyplot as plt 
 import random
-
+from graph import Graph
 class Grid():
     """
     A class representing the grid from the swap puzzle. It supports rectangular grids. 
@@ -129,6 +129,114 @@ class Grid():
         n=len(content[0])
         return(Grid(m,n,content))
     
+    def n1n2edge(n1,n2):#création d'arête entre deux noeuds (qu'on suppose de même format)
+        compteur=0
+        diff_sans_swap=0
+        g1=Grid.from_hashable(n1)
+        g2=Grid.from_hashable(n2)
+        m=g1.m
+        n=g1.n
+        #on vérifie qu'il existe un unique swap permettant de passer de g1 à g2 
+        #on sépare les cas selon qu'on se trouve sur la dernière colonne ou la dernière ligne 
+        for i in range(m-1):
+            for j in range(n-1):
+                if g1[i][j] != g2[i][j]:
+                    if g2[i][j+1]==g1[i][j] and g1[i][j+1]==g2[i][j]:
+                        compteur+=1
+                    elif g2[i+1][j]==g1[i][j] and g1[i+1][j]==g2[i][j]:
+                        compteur+=1
+                    else:
+                        diff_sans_swap+=1
+        for i in range(m-1):
+            if g2[i][n-1]==g1[i+1][n-1] and g1[i][n-1]==g2[i+1][n-1]:
+                compteur+=1
+        for j in range(n-1):
+            if g2[m-1][j]==g1[m-1][j+1] and  g1[m-1][j]==g2[m-1][j+1]:
+                compteur+=1
+        if compteur==1 and diff_sans_swap==0:
+            return((n1,n2))
+        
+    def voisins(node): #on créer la liste de tous les noeuds reliés à un noeud quelconque
+        l=[]
+        g=Grid.from_hashable(node)
+        m=g.m
+        n=g.n
+        #de même on sépare les cas de la dernière ligne et dernière colonne 
+        for i in range(m-1):
+            for j in range(n-1):
+                g1=g.state
+                g2=g.state
+                g1.swap((i,j),(i,j+1))
+                g2.swap((i,j),(i+1,j))
+                l+=[Grid.to_hashable(g1)]+[Grid.to_hashable(g2)]
+        for j in range(n-1):
+            g1=g.state
+            g1.swap((m-1,j),(m-1,j+1))
+            l+=[Grid.to_hashable(g1)]
+        for i in range(m-1):
+            g2=g.state
+            g2.swap((i,n-1),(i+1,n-1))
+            l+=[Grid.to_hashable(g2)]
+        return(l)
+    
+   
+
+    def auxi(grid,l):
+        m=0
+        for x in Grid.voisins(Grid.to_hashable(grid)):
+            if x in l:
+                m+=1
+        if m==len(Grid.voisins(Grid.to_hashable(grid))):
+            l+=[]
+        else :
+            for x in Grid.voisins(Grid.to_hashable(grid)):
+                if x not in l:
+                    l+=[x]+Grid.auxi(Grid.from_hashable(x))
+                    
+            
+
+    def tous_les_noeuds(self):
+        l=[]
+        l+=Grid.auxi(self.state,l)
+        return(l)
+        
+    def arêtes(self):
+        l=[]
+        nb=0
+        for x in Grid.tous_les_noeuds():
+            for y in Grid.voisins(x):
+                l+=Grid.n1n2edge(x,y)
+                nb+=1
+        return(l,nb)
+        
+            
+                
+    
+    def graph_from_grid(self):
+        dict={}
+        for x in self.tous_les_noeuds():
+            dict[x]=Grid.voisins(x)
+        return(Graph(self.tous_les_noeuds,dict,len(self.tous_les_noeuds),(self.arêtes())[1],(self.arêtes())[0]))
+    
+    def solution_optimale1(self):
+        graph=self.graph_from_grid()
+        return (self.bfs(Grid.to_hashable(self.state),Grid.to_hashable(tabref=[list(range(i*((self.g).n)+1, (i+1)*((self.g).n)+1)) for i in range((self.g).m)])))
+
+
+                    
+                
+
+                
+
+
+        
+
+        
+                        
+        
+
+    
+    #question 7
 
 
     @classmethod

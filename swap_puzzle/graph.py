@@ -81,19 +81,6 @@ class Graph:
         self.nb_edges += 1
         self.edges.append((node1, node2))
     
-    import pyplot as plt
-    #Représentation graphique
-    def trace(self):
-
-        _, ax = plt.subplots()
-
-        ax.matshow(self.state, cmap=plt.cm.Blues)
-
-        for i in range(self.n):
-            for j in range(self.m):
-                c = self.state[j][i]
-                ax.text(i, j, str(c), va='center', ha='center')
-        plt.show()
 
                 
       
@@ -121,6 +108,7 @@ class Graph:
         sommets avant qu'ils soient traités. La liste predecessor indique pour chaque sommet un prédecesseur 
         tel que le chemin en passant par ce prédecesseur soit le plus court possible.
         """
+        # Se pencher sur la complexité 
 
         dico = self.graph
         pile = [(src, [src])]

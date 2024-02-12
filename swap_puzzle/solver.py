@@ -23,7 +23,7 @@ class Solver(): # Question 3
                     (iref,jref)=(i,j)
             for i in range((self.g).m):
               for j in range((self.g).n):  
-                if (self.g).state[i][j]==num:
+                if (self.g).state[i][j]==num and (i,j)!= (iref, jref):
                     while j<(self.g).n-1:
                         (self.g).swap((i,j),(i,j+1))
                         l+=[((i,j),(i,j+1))]
