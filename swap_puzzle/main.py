@@ -1,16 +1,14 @@
 from grid import Grid
 from solver import Solver
 from graph import Graph
-carla=[[5,3,6],[2,1,4]]
-g = Grid(2, 3, carla)
-g.swap((0,0),(0,1))
-#print(g)
-S=Solver(g)
-#print(S.get_solution())
-#print(g)
+g=Grid(2,3,[[1,3,2],[5,4,6]])
 
-graph1 = Graph.graph_from_file("/workspaces/ensae-prog24/input/graph1.in")
-print(graph1.bfs(1,7))
+
+grid0 = Grid.grid_from_file("input/grid0.in")
+print(grid0.opti_solution1())
+grid0.swap_seq([((0, 1), (1, 1)), ((0, 0), (0, 1))])
+print(grid0)
+
 
 '''
 data_path = "../input/"

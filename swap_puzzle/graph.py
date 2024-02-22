@@ -103,24 +103,20 @@ class Graph:
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
-        """ On implémante un parcours en largeur classique avec d la liste des distances par rappport à la source.
-        On s'en sert notamment pour savoir si un sommet est atteignable. La file sert de liste d'attente des 
-        sommets avant qu'ils soient traités. La liste predecessor indique pour chaque sommet un prédecesseur 
-        tel que le chemin en passant par ce prédecesseur soit le plus court possible.
-        """
+        
         # Se pencher sur la complexité 
 
         dico = self.graph
-        pile = [(src, [src])]
+        queue = [(src, [src])]
 
-        while pile: 
-            s, path = pile.pop(0)
+        while queue: 
+            s, path = queue.pop(0)
             if s == dst:
                 return path 
             
             for i in dico[s]:
                 if i not in path:
-                    pile.append((i, path + [i]))
+                    queue.append((i, path + [i]))
 
         return None
         

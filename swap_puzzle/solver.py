@@ -28,18 +28,18 @@ class Solver(): # Question 3
                         (self.g).swap((i,j),(i,j+1))
                         l+=[((i,j),(i,j+1))]
                         j+=1
-                    print((self.g).state)
+                    #print((self.g).state)
                     while i >=0 and i != iref :
                         (self.g).swap((i,(self.g).n-1),(i-1,(self.g).n-1))
                         l+=[((i,(self.g).n-1),(i-1,(self.g).n-1))]
                         i-=1
-                    print((self.g).state)
+                    #print((self.g).state)
                     while j>=0 and j != jref :
                         (self.g).swap((iref,j),(iref,j-1))
                         j-=1
                         l+=[((iref,j),(iref,j-1))]
-                    print((self.g).state)
-            print(num)
+                    #print((self.g).state)
+            #print(num)
         return(l)
 
 
