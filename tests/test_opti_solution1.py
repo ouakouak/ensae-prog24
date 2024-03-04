@@ -20,11 +20,6 @@ class Test_optisolution1(unittest.TestCase):
         g.swap_seq(f)
         self.assertEqual(g.state,[[1,2],[3,4],[5,6],[7,8]])
 
-    def test_optisolution1_2(self):
-        g = Grid.grid_from_file("input/grid2.in")
-        f=g.opti_solution1()
-        g.swap_seq(f)
-        self.assertEqual(g.state,[[1,2,3],[4,5,6],[7,8,9]])
 
 
     

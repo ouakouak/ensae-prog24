@@ -4,10 +4,11 @@ from graph import Graph
 g=Grid(2,3,[[1,3,2],[5,4,6]])
 
 
-grid0 = Grid.grid_from_file("input/grid0.in")
-print(grid0.opti_solution1())
-grid0.swap_seq([((0, 1), (1, 1)), ((0, 0), (0, 1))])
-print(grid0)
+grid1 = Grid.grid_from_file("input/grid1.in")
+print(grid1.opti_solution1())
+
+
+
 
 
 '''

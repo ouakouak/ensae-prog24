@@ -163,23 +163,47 @@ class Grid():
         return(l)
     #such as the previous function we just have to do swaps with cells on the right or on the bottom
    
+    """ 
+    Let's denote the dimensions of the grid as m*n.
 
-    
-    def all_nodes(self):# we use a Breadth-First Search (BFS) to add to a list all nodes from a graph whom source is an input grid 
-        initial_node=self.to_hashable()
-        queue = [(initial_node, [initial_node])]
-        visited=[]
+    Here's the breakdown of the complexity:
+    The function iterates over each cell in the grid, which requires O(m*n) iterations.
+
+    For each cell, it performs up to two swaps to generate neighboring configurations. 
+    Swapping involves updating the positions of elements in the grid, which typically takes constant time.
+
+    Thus, the total time complexity of the neighbors function is O(m*n).
+    """
+
+
+    def all_nodes(self):
+        m=self.m
+        n=self.n
         list_nodes=[]
-        while queue: 
-            node,path  = queue.pop(0)
-            list_nodes+=[node]
-            visited+=[node]
-            for neighbor in Grid.neighbors(node):
-                if neighbor not in visited:
-                    queue.append((neighbor, path + [neighbor]))
+        import itertools
+        nums=[]
+        for i in range(m*n):
+            nums+=[i+1]
+        permutations=tuple(itertools.permutations(nums))
+        for x in permutations:
+            i=0
+            lignes=[]
+            while i<=m*n-n+1:
+                lignes+=[x[i:i+n]]
+                i+=n
+            list_nodes+=[tuple(lignes)]
         return(list_nodes)
-                
-                                  
+
+    """
+    Let's denote the dimensions of the grid as m*n.
+    Here's the breakdown of the complexity:
+
+    The function generates all permutations of numbers from 1 to m*n, which requires O((m*n)!) permutations in the worst case.
+   
+    For each permutation, the function constructs a grid representation, which involves reshaping the permutation into a m*n table. 
+    This operation typically takes linear time, O(m*n), since it requires iterating over each element in the permutation.
+    Thus, the total time complexity of the all_nodes function is dominated by the generation of permutations, and it is O((m×n)!×m×n).
+    """                 
         
     def edges(self):#return the list of all edges in the graph and the number of edges
         l=[]
@@ -190,9 +214,10 @@ class Grid():
                 nb+=1
         return(l,nb)
 
+    """the complexity is the complexity of all_nodes * the complexity of neighbors (in the worst case).
+    Thus its O((m*n)!*(m*n))"""
+
     def cplswap_from_edge(n1,n2):#return the couple of cells that have been swaped to get n2 from n1 or n1 from n2(we suppose that n2 is a neigbor of n1)
-        """grid1=Grid.from_hashable(n1)
-        grid2=Grid.from_hashable(n2)"""
         m=len(n1)
         n=len(n1[0])
         for i in range(m-1):
@@ -207,10 +232,11 @@ class Grid():
                 if n2[i][n-1]==n1[i+1][n-1] and n1[i][n-1]==n2[i+1][n-1]:
                     return((i,n-1),(i+1,n-1))
         for j in range(n-1):
-            if n1[m-1][j]==n2[m-1,j+1] and n2[m-1][j]==n1[m-1,j+1]:
+            if n1[m-1][j]==n2[m-1][j+1] and n2[m-1][j]==n1[m-1][j+1]:
                 if n2[m-1][j]==n1[m-1][j+1] and  n1[m-1][j]==n2[m-1][j+1]:
                     return((m-1,j),(m-1,j+1))
-                    
+
+    """the total time complexity of the cplswap_from_edge function is O(m*n)."""             
                     
     
     def graph_from_grid(self):#the final function that return a graph from a grid
@@ -224,7 +250,8 @@ class Grid():
         newgraph.nb_nodes=len(self.all_nodes())
         newgraph.edges=(self.edges())[0]
         return(newgraph)
-    
+    """the time complexity of the graph_from_grid function is dominated by the generation of
+      all nodes and finding their neighbors, which is neighbors_per_node O((m*n)!*m*n)"""
     
     def opti_solution1(self):#now we can use the bfs function that will find the shortest way between the initial state and the sorted state of a grid
         listswap=[]
@@ -238,8 +265,48 @@ class Grid():
             listswap+=[(Grid.cplswap_from_edge(n1,n2))]
         return(listswap)
 
+    """the total complexity of the opti_solution1 function is dominated by the complexity of graph 
+    generation and execution of the BFS algorithm, which is of the order of neighbors_per_node
+O((m*n)!*m*n"""
+
+
     
-   
+   # question 8 
+    """ il suffit d'ameliorer les précédentes fonctions pour que lorsqu'un nombre est à la bonne place, on ne garde que les voisins qui ne changent pas de place ce nombre"""
+    def neighbors2(node):
+        l=[]
+        
+        g=Grid.from_hashable(node)
+        m=g.m
+        n=g.n
+        sortedgrid=Grid(m,n,[list(range(i*((n)+1), (i+1)*((n)+1))) for i in range(m,1)])
+    #we treat the last column and the last lign after the general case to prevent for index problems
+        #for each cell in the grid(grid from node), we use swap with the cell on the right or on the bottom of it which gives two neighbors we add to the list of neighbors
+        for i in range(m-1):
+            for j in range(n-1):
+                if g.state[i][j]!=sortedgrid.state[i][j] or g.state[i][j+1]!=sortedgrid.state[i][j+1] :
+                    #swap to the right then return at the initial state (before the swap)
+                    g.swap((i,j),(i,j+1))
+                    l+=[Grid.to_hashable(g)]
+                    g.swap((i,j),(i,j+1))
+                if g.state[i][j]!=sortedgrid.state[i][j] or g.state[i+1][j]!=sortedgrid.state[i+1][j] :
+                    #swap to the bottom then return at the initial state(before the swap)
+                    g.swap((i,j),(i+1,j))
+                    l+=[Grid.to_hashable(g)]
+                    g.swap((i,j),(i+1,j))
+                #g is unchanged  
+        for j in range(n-1):
+            g.swap((m-1,j),(m-1,j+1))
+            l+=[Grid.to_hashable(g)]
+            g.swap((m-1,j),(m-1,j+1))
+        for i in range(m-1):
+            g.swap((i,n-1),(i+1,n-1))
+            l+=[Grid.to_hashable(g)]
+            g.swap((i,n-1),(i+1,n-1))
+        return(l)
+
+     
+        
 
 
     @classmethod
