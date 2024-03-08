@@ -1,10 +1,13 @@
 """
 This is the grid module. It contains the Grid class and its associated methods.
 """
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+import numpy
 import random
-from collections import deque
+
+
 from graph import Graph
+import heapq
 class Grid():
     """
     A class representing the grid from the swap puzzle. It supports rectangular grids. 
@@ -202,7 +205,7 @@ class Grid():
    
     For each permutation, the function constructs a grid representation, which involves reshaping the permutation into a m*n table. 
     This operation typically takes linear time, O(m*n), since it requires iterating over each element in the permutation.
-    Thus, the total time complexity of the all_nodes function is dominated by the generation of permutations, and it is O((m×n)!×m×n).
+    Thus, the total time complexity of the all_nodes function is dominated by the generation of permutations, and it is O((m*n)!*m*n).
     """                 
         
     def edges(self):#return the list of all edges in the graph and the number of edges
@@ -272,41 +275,132 @@ O((m*n)!*m*n"""
 
     
    # question 8 
-    """ il suffit d'ameliorer les précédentes fonctions pour que lorsqu'un nombre est à la bonne place, on ne garde que les voisins qui ne changent pas de place ce nombre"""
-    def neighbors2(node):
-        l=[]
+    """To create an optimal version to find the shortest way between the input grid and the sorted grid,
+       we choose to generates a smaller graph in a bfs way: we use a bfs method to generate the nodes until we get to the solution. 
+       Thanks to that we will not generate a part of a graph that is not necessary to solve the problem which optimise 
+       the time and the space.
+       Then, we use the bfs function in the optimised graph to solve the problem.
+       
+       PS: It can be noticed that we could have use only one bfs to create the nodes and save the path in the same time but the complexity
+       would have been the same within one factor
+       """
+    def all_nodes_opti(self):
+        initial_node = self.to_hashable()
+        sortedgrid = Grid(self.m, self.n, [list(range(i * ((self.n) + 1), (i + 1) * ((self.n) + 1))) for i in range(self.m, 1)])
+        final_node = Grid.to_hashable(sortedgrid)
+    
+        queue = [initial_node]
+        visited = []
+    
+        while queue:
+            node = queue.pop(0)
+            visited.append(node)
         
-        g=Grid.from_hashable(node)
-        m=g.m
-        n=g.n
-        sortedgrid=Grid(m,n,[list(range(i*((n)+1), (i+1)*((n)+1))) for i in range(m,1)])
-    #we treat the last column and the last lign after the general case to prevent for index problems
-        #for each cell in the grid(grid from node), we use swap with the cell on the right or on the bottom of it which gives two neighbors we add to the list of neighbors
-        for i in range(m-1):
-            for j in range(n-1):
-                if g.state[i][j]!=sortedgrid.state[i][j] or g.state[i][j+1]!=sortedgrid.state[i][j+1] :
-                    #swap to the right then return at the initial state (before the swap)
-                    g.swap((i,j),(i,j+1))
-                    l+=[Grid.to_hashable(g)]
-                    g.swap((i,j),(i,j+1))
-                if g.state[i][j]!=sortedgrid.state[i][j] or g.state[i+1][j]!=sortedgrid.state[i+1][j] :
-                    #swap to the bottom then return at the initial state(before the swap)
-                    g.swap((i,j),(i+1,j))
-                    l+=[Grid.to_hashable(g)]
-                    g.swap((i,j),(i+1,j))
-                #g is unchanged  
-        for j in range(n-1):
-            g.swap((m-1,j),(m-1,j+1))
-            l+=[Grid.to_hashable(g)]
-            g.swap((m-1,j),(m-1,j+1))
-        for i in range(m-1):
-            g.swap((i,n-1),(i+1,n-1))
-            l+=[Grid.to_hashable(g)]
-            g.swap((i,n-1),(i+1,n-1))
-        return(l)
+            if node == final_node:
+                break
+        
+            for neighbor in Grid.neighbors(node):
+                if neighbor not in visited:
+                    queue.append(neighbor)
+    
+        return visited
 
      
+    def edges_opti(self):#return the list of all edges in the graph and the number of edges
+        l=[]
+        nb=0
+        for x in Grid.all_nodes_opti(self):
+            for y in Grid.neighbors(x):
+                l+=(x,y)
+                nb+=1
+        return(l,nb)
+
+    def graph_from_grid_opti(self):#the final function that return a graph from a grid
+        newgraph=Graph(self.all_nodes_opti())
+        newgraph.nodes=self.all_nodes_opti()
+        dict={}
+        for node in self.all_nodes_opti():
+            dict[node]=Grid.neighbors(node)
+        newgraph.graph=dict
+        newgraph.nb_edges=(self.edges_opti())[1]
+        newgraph.nb_nodes=len(self.all_nodes_opti())
+        newgraph.edges=(self.edges_opti())[0]
+        return(newgraph)
+
+    def opti_solution1_opti(self):#now we can use the bfs function that will find the shortest way between the initial state and the sorted state of a grid
+        listswap=[]
+        graph=self.graph_from_grid_opti()
+        sortedgrid=Grid(self.m,self.n,[list(range(i*((self.n)+1), (i+1)*((self.n)+1))) for i in range(self.m,1)])
+        #print(Grid.to_hashable(sortedgrid) in self.all_nodes())
+        l=Graph.bfs(graph,Grid.to_hashable(self),Grid.to_hashable(sortedgrid))
+        for i in range(len(l)-1):
+            n1=l[i]
+            n2=l[i+1]
+            listswap+=[(Grid.cplswap_from_edge(n1,n2))]
+        return(listswap) 
+    
+   
+   
+   
+    #implémentation de A*
+
+    
+
+    #We firstly need to define an heuristic 
+    def heuristic(node, goal):
+        m=len(node)
+        n=len(node[0])
+        compteur=0
+        for i in range(m):
+            for j in range(n):
+                if node[i][j]!=goal[i][j]:
+                    compteur+=1
+        return (compteur)
+    
+    def Astar(self):
+        initial_node=self.to_hashable()
+        sortedgrid=Grid(self.m,self.n,[list(range(i*((self.n)+1), (i+1)*((self.n)+1))) for i in range(self.m,1)])
+        final_node=sortedgrid.to_hashable()
         
+        queue=[((0,Grid.heuristic(initial_node,final_node)),initial_node)]
+        path=[]
+
+        while queue:
+            (num,score),node = heapq.heappop(queue)
+            path.append(node)
+            print((num,score),node)
+
+            if node==final_node:
+                return(path)
+            
+            for x in Grid.neighbors(node):
+                if x not in path:
+                    scorex=Grid.heuristic(x,final_node)
+                    heapq.heappush(queue,((num-1, scorex), x))
+        
+        
+    def noswaperror(l):
+        for i in range(len(l)-1):
+            if l[i+1] not in Grid.neighbors(l[i]):
+                return('swap error')
+        return('no swap error')           
+
+            
+
+            
+
+    import pygame
+
+
+
+
+
+
+
+    
+
+
+    
 
 
     @classmethod
