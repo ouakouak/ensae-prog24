@@ -10,7 +10,6 @@ class Solver(): # Question 3
     def __init__(self,grid):
         self.g=grid
    
-
     def get_solution(self):
         l=[]
         tabref=[list(range(i*((self.g).n)+1, (i+1)*((self.g).n)+1)) for i in range((self.g).m)]
@@ -43,4 +42,3 @@ class Solver(): # Question 3
         return(l)
 
 
-       

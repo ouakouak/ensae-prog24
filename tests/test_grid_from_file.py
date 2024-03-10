@@ -1,9 +1,13 @@
-# This will work if ran from the root folder ensae-prog24
 import sys 
 sys.path.append("swap_puzzle/")
 
 import unittest 
 from grid import Grid
+
+"""
+This class tests our function grid_from_file by comparing the result of the function 
+with the wanted grid for grid1. 
+"""
 
 class Test_GridLoading(unittest.TestCase):
     def test_grid1(self):

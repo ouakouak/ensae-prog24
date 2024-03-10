@@ -1,11 +1,9 @@
-# This will work if ran from the root folder ensae-prog24
 import sys 
 sys.path.append("swap_puzzle/")
 
 import unittest 
 from grid import Grid
 from graph import Graph
-
 
 class Test_optisolution1(unittest.TestCase):
     def test_optisolution1_0(self):
@@ -20,17 +18,24 @@ class Test_optisolution1(unittest.TestCase):
         g.swap_seq(f)
         self.assertEqual(g.state,[[1,2],[3,4],[5,6],[7,8]])
 
-    def test_optisolution2(self) :
+    def test_optisolution1_2(self) :
         g = Grid.grid_from_file("input/grid2.in")
         f=g.opti_solution1_opti()
         g.swap_seq(f)
         self.assertEqual(g.state,[[1,2,3],[4,5,6],[7,8,9]])
 
-    """def test_optisolution3(self) :
+    """
+        def test_optisolution3(self) :
         g = Grid.grid_from_file("input/grid3.in")
         f=g.opti_solution1_opti()
         g.swap_seq(f)
-        self.assertEqual(g.state,[[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])"""
+        self.assertEqual(g.state,[[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]])
+    """
+    """
+        This function doesn't work for grid3 : the quantity of nodes takes too much 
+        space and time for it to work. 
+        The function "Opti_solution1" only works well for grids with a small dimension. 
+    """
 
 if __name__ == '__main__':
     unittest.main()

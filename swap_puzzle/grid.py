@@ -5,15 +5,13 @@ import matplotlib.pyplot as plt
 import numpy
 import random
 
-
 from graph import Graph
 import heapq
 class Grid():
     """
-    A class representing the grid from the swap puzzle. It supports rectangular grids. 
+    class representing the grid from the swap puzzle. It supports rectangular grids. 
 
     Attributes: 
-    -----------
     m: int
         Number of lines in the grid
     n: int
@@ -59,19 +57,21 @@ class Grid():
 
    
     # Question 2
-   
     def swap(self, cell1, cell2):
         """
         Implements the swap operation between two cells. Raises an exception if the swap is not allowed.
 
         Parameters: 
-        -----------
         cell1, cell2: tuple[int]
-            The two cells to swap. They must be in the format (i, j) where i is the line and j the column number of the cell. 
+        The two cells to swap. They must be in the format (i, j) where i is the line and j the column number of the cell. 
         """
-        # we statrt by checking if the swap is allowed
+        """
+        we start by checking if the swap is allowed
+        """
         assert((cell1[0]==cell2[0] and abs(cell1[1]-cell2[1])==1) or (cell1[1]==cell2[1] and abs(cell1[0]-cell2[0])==1))
-        # then we swap the two cells
+        """
+        then we swap the two cells
+        """
         (a,b)=cell1
         (c,d)=cell2
         x=self.state[a][b]
@@ -80,24 +80,26 @@ class Grid():
         self.state[c][d]=x
 
 
-    def swap_seq(self, cell_pair_list):
-        
+    def swap_seq(self, cell_pair_list): 
         """
         Executes a sequence of swaps. 
 
         Parameters: 
-        -----------
         cell_pair_list: list[tuple[tuple[int]]]
             List of swaps, each swap being a tuple of two cells (each cell being a tuple of integers). 
             So the format should be [((i1, j1), (i2, j2)), ((i1', j1'), (i2', j2')), ...].
         """
         for i in range(len(cell_pair_list)):
             self.swap(cell_pair_list[i][0], cell_pair_list[i][1])
-    #we use the previous function on all couples of cell given in cell_pair_list
+    """
+    we use the previous function on all couples of cell given in cell_pair_list
+    """
 
 
-
-    def is_sorted(self): #return "True" if the grid is sorted, "False" if it is not
+    def is_sorted(self): 
+        """
+        return "True" if the grid is sorted, "False" if it is not
+        """
         n = self.n
         m = self.m
         l = self.state
@@ -114,14 +116,12 @@ class Grid():
         Creates a grid object from class Grid, initialized with the information from the file file_name.
         
         Parameters: 
-        -----------
         file_name: str
             Name of the file to load. The file must be of the format: 
             - first line contains "m n" 
             - next m lines contain n integers that represent the state of the corresponding cell
 
         Output: 
-        -------
         grid: Grid
             The grid
         """
@@ -136,8 +136,7 @@ class Grid():
             grid = Grid(m, n, initial_state)
         return grid
     
-
-    #graphic representation
+    """graphic representation"""
     def trace(self):
         _, ax = plt.subplots()
 
@@ -150,36 +149,32 @@ class Grid():
 
 
     #question 6
-    def to_hashable(self): #return an hashable representation of a grid
+    def to_hashable(self): #returns an hashable representation of a grid
         return (tuple(tuple(line) for line in self.state))
     
     
-    def from_hashable(hashable_state:tuple): #return a grid from an hashable representation of a grid
+    def from_hashable(hashable_state:tuple): #returns a grid from an hashable representation of a grid
         content= [list(row) for row in hashable_state]
         m=len(content)
         n=len(content[0])
         return(Grid(m,n,content))
-   
-    
-    
-    
-    #question 7
 
-    
-    def neighbors(node): #return a list of all nods linked with the input node
+
+    #question 7
+    def neighbors(node): #returns a list of all nods linked with the input node
         l=[]
         g=Grid.from_hashable(node)
         m=g.m
         n=g.n
-    #we treat the last column and the last lign after the general case to prevent for index problems
-        #for each cell in the grid(grid from node), we use swap with the cell on the right or on the bottom of it which gives two neighbors we add to the list of neighbors
+    #we treat the last column and the last lign after the general case to prevent index problems
+    #for each cell in the grid(grid from node), we use swap with the cell on the right or on the bottom of it which gives two neighbors we add to the list of neighbors
         for i in range(m-1):
             for j in range(n-1):
-                #swap to the right then return at the initial state (before the swap)
+                #swaps to the right then goes back to the initial state (before the swap)
                 g.swap((i,j),(i,j+1))
                 l+=[Grid.to_hashable(g)]
                 g.swap((i,j),(i,j+1))
-                #swap to the bottom then return at the initial state(before the swap)
+                #swaps to the bottom then goes back to the initial state(before the swap)
                 g.swap((i,j),(i+1,j))
                 l+=[Grid.to_hashable(g)]
                 g.swap((i,j),(i+1,j))
@@ -207,8 +202,6 @@ class Grid():
     Thus, the total time complexity of the neighbors function is O(m*n).
     """
     
-
-
     def all_nodes(self):
         m=self.m
         n=self.n
@@ -238,7 +231,7 @@ class Grid():
     Thus, the total time complexity of the all_nodes function is dominated by the generation of permutations, and it is O((m*n)!*m*n).
     """                 
         
-    def edges(self):#return the list of all edges in the graph and the number of edges
+    def edges(self):#returns the list of all edges in the graph and the number of edges
         l=[]
         nb=0
         for x in Grid.all_nodes(self):
@@ -247,10 +240,12 @@ class Grid():
                 nb+=1
         return(l,nb)
 
-    """the complexity is the complexity of all_nodes * the complexity of neighbors (in the worst case).
-    Thus its O((m*n)!*(m*n))"""
+    """
+    The complexity is the complexity of all_nodes * the complexity of neighbors (in the worst case).
+    Thus its O((m*n)!*(m*n))
+    """
     
-    def cplswap_from_edge(n1,n2):#return the couple of cells that have been swaped to get n2 from n1 or n1 from n2(we suppose that n2 is a neigbor of n1)
+    def cplswap_from_edge(n1,n2):#returns the couple of cells that have been swaped to get n2 from n1 or n1 from n2(we suppose that n2 is a neigbor of n1)
         m=len(n1)
         n=len(n1[0])
         for i in range(m-1):
@@ -269,10 +264,12 @@ class Grid():
                 if n2[m-1][j]==n1[m-1][j+1] and  n1[m-1][j]==n2[m-1][j+1]:
                     return((m-1,j),(m-1,j+1))
 
-    """the total time complexity of the cplswap_from_edge function is O(m*n)."""             
+    """
+    The total time complexity of the cplswap_from_edge function is O(m*n).
+    """             
                     
     
-    def graph_from_grid(self):#the final function that return a graph from a grid
+    def graph_from_grid(self):#the final function that returns a graph from a grid
         newgraph=Graph(self.all_nodes())
         newgraph.nodes=self.all_nodes()
         dict={}
@@ -283,10 +280,12 @@ class Grid():
         newgraph.nb_nodes=len(self.all_nodes())
         newgraph.edges=(self.edges())[0]
         return(newgraph)
-    """the time complexity of the graph_from_grid function is dominated by the generation of
-      all nodes and finding their neighbors, which is neighbors_per_node O((m*n)!*m*n)"""
+    """
+    The time complexity of the graph_from_grid function is dominated by the generation of
+    all nodes and finding their neighbors, which is neighbors_per_node O((m*n)!*m*n).
+    """
     
-    def opti_solution1(self):#now we can use the bfs function that will find the shortest way between the initial state and the sorted state of a grid
+    def opti_solution1(self):#now we can use the BFS function that will find the shortest way between the initial state and the sorted state of a grid
         listswap=[]
         graph=self.graph_from_grid()
         sortedgrid=Grid(self.m,self.n,[list(range(i*((self.n)+1), (i+1)*((self.n)+1))) for i in range(self.m,1)])
@@ -298,22 +297,23 @@ class Grid():
             listswap+=[(Grid.cplswap_from_edge(n1,n2))]
         return(listswap)
 
-    """the total complexity of the opti_solution1 function is dominated by the complexity of graph 
+    """
+    The total complexity of the opti_solution1 function is dominated by the complexity of graph 
     generation and execution of the BFS algorithm, which is of the order of neighbors_per_node
-O((m*n)!*m*n"""
+    O((m*n)!*m*n
+    """
 
-
-    
-   # question 8 
-    """To create an optimal version to find the shortest way between the input grid and the sorted grid,
-       we choose to generates a smaller graph in a bfs way: we use a bfs method to generate the nodes until we get to the solution. 
-       Thanks to that we will not generate a part of a graph that is not necessary to solve the problem which optimise 
-       the time and the space.
-       Then, we use the bfs function in the optimised graph to solve the problem.
+# Question 8 
+    """
+    To create an optimal version to find the shortest way between the input grid and the sorted grid,
+    we chose to generate a smaller graph in a BFS way: we use a BFS method to generate the nodes until we get to the solution. 
+    Thanks to that, we will not generate a part of a graph that is not necessary to solve the problem, which optimise 
+    the time and the space.
+    Then, we use the BFS function in the optimised graph to solve the problem.
        
-       PS: It can be noticed that we could have use only one bfs to create the nodes and save the path in the same time but the complexity
-       would have been the same within one factor
-       """
+    PS: It can be noticed that we could have use only one BFS to create the nodes and save the path in the same time but 
+    the complexity would have been the same within one factor
+    """
     def all_nodes_opti(self):
         initial_node = self.to_hashable()
         sortedgrid = Grid(self.m, self.n, [list(range(i * ((self.n) + 1), (i + 1) * ((self.n) + 1))) for i in range(self.m, 1)])
@@ -325,18 +325,14 @@ O((m*n)!*m*n"""
         while queue:
             node = queue.pop(0)
             visited.append(node)
-        
             if node == final_node:
                 break
-        
             for neighbor in Grid.neighbors(node):
                 if neighbor not in visited:
                     queue.append(neighbor)
-    
         return visited
 
-     
-    def edges_opti(self):#return the list of all edges in the graph and the number of edges
+    def edges_opti(self): #returns the list of all edges in the graph and the number of edges
         l=[]
         nb=0
         for x in Grid.all_nodes_opti(self):
@@ -345,7 +341,7 @@ O((m*n)!*m*n"""
                 nb+=1
         return(l,nb)
 
-    def graph_from_grid_opti(self):#the final function that return a graph from a grid
+    def graph_from_grid_opti(self): #the final function that returns a graph from a grid
         newgraph=Graph(self.all_nodes_opti())
         newgraph.nodes=self.all_nodes_opti()
         dict={}
@@ -357,7 +353,7 @@ O((m*n)!*m*n"""
         newgraph.edges=(self.edges_opti())[0]
         return(newgraph)
 
-    def opti_solution1_opti(self):#now we can use the bfs function that will find the shortest way between the initial state and the sorted state of a grid
+    def opti_solution1_opti(self): #now we can use the BFS function that will find the shortest way between the initial state and the sorted state of a grid using the allnodesopti
         listswap=[]
         graph=self.graph_from_grid_opti()
         sortedgrid=Grid(self.m,self.n,[list(range(i*(self.n)+1, (i+1)*(self.n)+1)) for i in range(self.m)])
@@ -370,13 +366,10 @@ O((m*n)!*m*n"""
         return(listswap) 
     
    
-   
-   
-    #implémentation de A*
 
-    
+# Implémentation de A*
+
     #We firstly need to define an heuristic 
-    
     def heuristic(node, goal):
         m=len(node)
         n=len(node[0])
@@ -407,7 +400,6 @@ O((m*n)!*m*n"""
                 if x not in path:
                     scorex=Grid.heuristic(x,final_node)
                     heapq.heappush(queue,((num-1, scorex), x))
-        
         
     def noswaperror(l):
         for i in range(len(l)-1):

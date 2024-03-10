@@ -7,7 +7,6 @@ class Graph:
     A class representing undirected graphs as adjacency lists. 
 
     Attributes: 
-    -----------
     nodes: NodeType
         A list of nodes. Nodes can be of any immutable type, e.g., integer, float, or string.
         We will usually use a list of integers 1, ..., n.
@@ -27,7 +26,6 @@ class Graph:
         Initializes the graph with a set of nodes, and no edges. 
 
         Parameters: 
-        -----------
         nodes: list, optional
             A list of nodes. Default is empty.
         """
@@ -61,7 +59,6 @@ class Graph:
         When adding an edge between two nodes, if one of the ones does not exist it is added to the list of nodes.
 
         Parameters: 
-        -----------
         node1: NodeType
             First end (node) of the edge
         node2: NodeType
@@ -80,32 +77,23 @@ class Graph:
         self.graph[node2].append(node1)
         self.nb_edges += 1
         self.edges.append((node1, node2))
-    
 
-                
-      
+
  #Question 5 : Algorithme de parcours en largeur
-    
-
     def bfs(self, src, dst): 
         """
         Finds a shortest path from src to dst by BFS.  
 
         Parameters: 
-        -----------
         src: NodeType
             The source node.
         dst: NodeType
             The destination node.
 
         Output: 
-        -------
         path: list[NodeType] | None
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
-        
-        # Se pencher sur la complexité 
-
         dico = self.graph
         queue = [(src, [src])]
 
@@ -113,7 +101,6 @@ class Graph:
             s, path = queue.pop(0)
             if s == dst:
                 return path 
-            
             for i in dico[s]:
                 if i not in path:
                     queue.append((i, path + [i]))
@@ -124,7 +111,6 @@ class Graph:
 In the worst case, BFS visits all the nodes and edges in the graph, 
 as it explores all the neighbors of a node before moving on to the next level of the graph.
 the complexity is O(V+E)"""
-
 
     @classmethod
     def graph_from_file(cls, file_name):
@@ -137,12 +123,10 @@ the complexity is O(V+E)"""
         The nodes (node1, node2) should be named 1..n
 
         Parameters: 
-        -----------
         file_name: str
             The name of the file
 
         Outputs: 
-        -----------
         graph: Graph
             An object of the class Graph with the graph from file_name.
         """
