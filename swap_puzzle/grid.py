@@ -391,7 +391,6 @@ class Grid():
         while queue:
             (num,score),node = heapq.heappop(queue)
             path.append(node)
-            print((num,score),node)
 
             if node==final_node:
                 return(path)
