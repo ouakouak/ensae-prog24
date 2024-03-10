@@ -5,8 +5,14 @@ import unittest
 from grid import Grid
 from graph import Graph
 
+""" 
+In this class, we check if our AStar function works, trying it on all the grids given. 
+ Each function works for a specific grid, wich number goes from 0 to 4. 
+ For all grids, the function just checks if the swaps done to ordonate 
+ the grid are the optimal ones (according to the Astar method). 
+ """
 
-class Test_optisolution1(unittest.TestCase):
+class Test_Astar(unittest.TestCase):
     def test_Astar_0(self):
         g = Grid.grid_from_file("input/grid0.in")
         l=g.Astar()
@@ -43,4 +49,4 @@ class Test_optisolution1(unittest.TestCase):
         self.assertEqual(Grid.noswaperror(l),'no swap error')
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main() 
