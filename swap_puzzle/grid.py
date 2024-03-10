@@ -108,7 +108,35 @@ class Grid():
         return True
         
 
+    @classmethod
+    def grid_from_file(cls, file_name): 
+        """
+        Creates a grid object from class Grid, initialized with the information from the file file_name.
+        
+        Parameters: 
+        -----------
+        file_name: str
+            Name of the file to load. The file must be of the format: 
+            - first line contains "m n" 
+            - next m lines contain n integers that represent the state of the corresponding cell
+
+        Output: 
+        -------
+        grid: Grid
+            The grid
+        """
+        with open(file_name, "r") as file:
+            m, n = map(int, file.readline().split())
+            initial_state = [[] for i_line in range(m)]
+            for i_line in range(m):
+                line_state = list(map(int, file.readline().split()))
+                if len(line_state) != n: 
+                    raise Exception("Format incorrect")
+                initial_state[i_line] = line_state
+            grid = Grid(m, n, initial_state)
+        return grid
     
+
     #graphic representation
     def trace(self):
         _, ax = plt.subplots()
@@ -125,7 +153,7 @@ class Grid():
     def to_hashable(self): #return an hashable representation of a grid
         return (tuple(tuple(line) for line in self.state))
     
-    @staticmethod
+    
     def from_hashable(hashable_state:tuple): #return a grid from an hashable representation of a grid
         content= [list(row) for row in hashable_state]
         m=len(content)
@@ -137,6 +165,7 @@ class Grid():
     
     #question 7
 
+    
     def neighbors(node): #return a list of all nods linked with the input node
         l=[]
         g=Grid.from_hashable(node)
@@ -164,7 +193,7 @@ class Grid():
             l+=[Grid.to_hashable(g)]
             g.swap((i,n-1),(i+1,n-1))
         return(l)
-    #such as the previous function we just have to do swaps with cells on the right or on the bottom
+    #we just have to do swaps with cells on the right or on the bottom
    
     """ 
     Let's denote the dimensions of the grid as m*n.
@@ -177,6 +206,7 @@ class Grid():
 
     Thus, the total time complexity of the neighbors function is O(m*n).
     """
+    
 
 
     def all_nodes(self):
@@ -219,7 +249,7 @@ class Grid():
 
     """the complexity is the complexity of all_nodes * the complexity of neighbors (in the worst case).
     Thus its O((m*n)!*(m*n))"""
-
+    
     def cplswap_from_edge(n1,n2):#return the couple of cells that have been swaped to get n2 from n1 or n1 from n2(we suppose that n2 is a neigbor of n1)
         m=len(n1)
         n=len(n1[0])
@@ -330,7 +360,7 @@ O((m*n)!*m*n"""
     def opti_solution1_opti(self):#now we can use the bfs function that will find the shortest way between the initial state and the sorted state of a grid
         listswap=[]
         graph=self.graph_from_grid_opti()
-        sortedgrid=Grid(self.m,self.n,[list(range(i*((self.n)+1), (i+1)*((self.n)+1))) for i in range(self.m,1)])
+        sortedgrid=Grid(self.m,self.n,[list(range(i*(self.n)+1, (i+1)*(self.n)+1)) for i in range(self.m)])
         #print(Grid.to_hashable(sortedgrid) in self.all_nodes())
         l=Graph.bfs(graph,Grid.to_hashable(self),Grid.to_hashable(sortedgrid))
         for i in range(len(l)-1):
@@ -345,8 +375,8 @@ O((m*n)!*m*n"""
     #implémentation de A*
 
     
-
     #We firstly need to define an heuristic 
+    
     def heuristic(node, goal):
         m=len(node)
         n=len(node[0])
@@ -403,32 +433,6 @@ O((m*n)!*m*n"""
     
 
 
-    @classmethod
-    def grid_from_file(cls, file_name): 
-        """
-        Creates a grid object from class Grid, initialized with the information from the file file_name.
-        
-        Parameters: 
-        -----------
-        file_name: str
-            Name of the file to load. The file must be of the format: 
-            - first line contains "m n" 
-            - next m lines contain n integers that represent the state of the corresponding cell
-
-        Output: 
-        -------
-        grid: Grid
-            The grid
-        """
-        with open(file_name, "r") as file:
-            m, n = map(int, file.readline().split())
-            initial_state = [[] for i_line in range(m)]
-            for i_line in range(m):
-                line_state = list(map(int, file.readline().split()))
-                if len(line_state) != n: 
-                    raise Exception("Format incorrect")
-                initial_state[i_line] = line_state
-            grid = Grid(m, n, initial_state)
-        return grid
+    
 
 
