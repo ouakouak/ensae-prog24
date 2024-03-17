@@ -167,7 +167,8 @@ class Grid():
         m=g.m
         n=g.n
     #we treat the last column and the last lign after the general case to prevent index problems
-    #for each cell in the grid(grid from node), we use swap with the cell on the right or on the bottom of it which gives two neighbors we add to the list of neighbors
+    #for each cell in the grid(grid from node), we use swap with the cell on the right or on the bottom 
+    #of it which gives two neighbors we add to the list of neighbors
         for i in range(m-1):
             for j in range(n-1):
                 #swaps to the right then goes back to the initial state (before the swap)
